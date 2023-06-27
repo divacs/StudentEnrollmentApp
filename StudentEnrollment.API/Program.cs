@@ -36,7 +36,7 @@ app.UseCors("AllowAll");
 
 app.MapGet("/courses", async ([FromServices]StudentEnrollmentDBContext context) => 
 {
-    await context.Courses.ToListAsync();
+    return await context.Courses.ToListAsync();
     // na ovom endpointu dolazimo do lite kurseva iz baze
 
 }); // kako dolazim do ovog endpointa
@@ -45,7 +45,16 @@ app.MapGet("courses/id", async ([FromServices] StudentEnrollmentDBContext contex
 {
     return await context.Courses.FindAsync(id) is Course course ? Results.Ok(course) : Results.NotFound();
 
-}); 
+});
+// metod za dodavanje novog podatka u bazu
+app.MapPost("courses/", async ([FromServices] StudentEnrollmentDBContext context, Course course) => 
+{
+    await context.AddAsync(course);
+    await context.SaveChangesAsync();
+
+    return Results.Created($"/courses/{course.Id}", course);
+
+});
 
 app.Run();
 
