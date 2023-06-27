@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudentEnrollment.Data;
 
@@ -33,25 +34,18 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
-var summaries = new[]
+app.MapGet("/courses", async ([FromServices]StudentEnrollmentDBContext context) => 
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    await context.Courses.ToListAsync();
+    // na ovom endpointu dolazimo do lite kurseva iz baze
 
-app.MapGet("/weatherforecast", () =>
+}); // kako dolazim do ovog endpointa
+
+app.MapGet("courses/id", async ([FromServices] StudentEnrollmentDBContext context, int id) => // zelimo da dohvatimo podatak po idju
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+    return await context.Courses.FindAsync(id) is Course course ? Results.Ok(course) : Results.NotFound();
+
+}); 
 
 app.Run();
 
