@@ -47,7 +47,7 @@ app.MapGet("courses/id", async ([FromServices] StudentEnrollmentDBContext contex
 
 });
 // metoda za dodavanje novog podatka u bazu
-app.MapPost("courses/", async ([FromServices] StudentEnrollmentDBContext context, Course course) => 
+app.MapPost("courses/", async (StudentEnrollmentDBContext context, Course course) => 
 {
     await context.AddAsync(course);
     await context.SaveChangesAsync();
@@ -56,7 +56,7 @@ app.MapPost("courses/", async ([FromServices] StudentEnrollmentDBContext context
 
 });
 // metoda za menjanje vec postojecih podataka, po idju
-app.MapPut("courses/{id}", async ([FromServices] StudentEnrollmentDBContext context, Course course, int id) =>
+app.MapPut("courses/{id}", async ( StudentEnrollmentDBContext context, Course course, int id) =>
 {
     var recordExists = await context.Courses.AnyAsync(q => q.Id == course.Id);
     if (!recordExists) return Results.NotFound();
@@ -67,10 +67,18 @@ app.MapPut("courses/{id}", async ([FromServices] StudentEnrollmentDBContext cont
     return Results.Created($"/courses/{course.Id}", course);
 
 });
+// brisanje podatka po idju
+app.MapDelete("courses/{id}", async (StudentEnrollmentDBContext context, Course course, int id) =>
+{
+    var record = await context.Courses.FindAsync(id);
+    if (record == null) return Results.NotFound();
+
+    context.Remove(record);
+    await context.SaveChangesAsync();
+    return Results.NoContent();
+
+
+});
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
