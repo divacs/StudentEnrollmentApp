@@ -46,10 +46,22 @@ app.MapGet("courses/id", async ([FromServices] StudentEnrollmentDBContext contex
     return await context.Courses.FindAsync(id) is Course course ? Results.Ok(course) : Results.NotFound();
 
 });
-// metod za dodavanje novog podatka u bazu
+// metoda za dodavanje novog podatka u bazu
 app.MapPost("courses/", async ([FromServices] StudentEnrollmentDBContext context, Course course) => 
 {
     await context.AddAsync(course);
+    await context.SaveChangesAsync();
+
+    return Results.Created($"/courses/{course.Id}", course);
+
+});
+// metoda za menjanje vec postojecih podataka, po idju
+app.MapPost("courses/{id}", async ([FromServices] StudentEnrollmentDBContext context, Course course, int id) =>
+{
+    var recordExists = await context.Courses.AnyAsync(q => q.Id == course.Id);
+    if (!recordExists) return Results.NotFound();
+
+    context.Update(course);
     await context.SaveChangesAsync();
 
     return Results.Created($"/courses/{course.Id}", course);
