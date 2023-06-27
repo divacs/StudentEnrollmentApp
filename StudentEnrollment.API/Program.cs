@@ -56,7 +56,7 @@ app.MapPost("courses/", async ([FromServices] StudentEnrollmentDBContext context
 
 });
 // metoda za menjanje vec postojecih podataka, po idju
-app.MapPost("courses/{id}", async ([FromServices] StudentEnrollmentDBContext context, Course course, int id) =>
+app.MapPut("courses/{id}", async ([FromServices] StudentEnrollmentDBContext context, Course course, int id) =>
 {
     var recordExists = await context.Courses.AnyAsync(q => q.Id == course.Id);
     if (!recordExists) return Results.NotFound();
