@@ -11,7 +11,7 @@ using StudentEnrollment.Data;
 
 namespace StudentEnrollment.Data.Migrations
 {
-    [DbContext(typeof(StudentEnrollmentDBContext))]
+    [DbContext(typeof(StudentEnrollmentDbContext))]
     [Migration("20230626214338_SeededUserRolesAndCourses")]
     partial class SeededUserRolesAndCourses
     {

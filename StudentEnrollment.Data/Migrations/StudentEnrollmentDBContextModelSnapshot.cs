@@ -10,7 +10,7 @@ using StudentEnrollment.Data;
 
 namespace StudentEnrollment.Data.Migrations
 {
-    [DbContext(typeof(StudentEnrollmentDBContext))]
+    [DbContext(typeof(StudentEnrollmentDbContext))]
     partial class StudentEnrollmentDBContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
