@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudentEnrollment.Data;
+using StudentEnrollment.API.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var conn = builder.Configuration.GetConnectionString("StudentEnrollmentDbConnection");
-builder.Services.AddDbContext<StudentEnrollmentDBContext>(options =>
+builder.Services.AddDbContext<StudentEnrollmentDbContext>(options =>
 {
     options.UseSqlServer(conn);
 });
@@ -34,20 +35,20 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
-app.MapGet("/courses", async ([FromServices]StudentEnrollmentDBContext context) => 
+app.MapGet("/courses", async ([FromServices] StudentEnrollmentDbContext context) => 
 {
     return await context.Courses.ToListAsync();
     // na ovom endpointu dolazimo do lite kurseva iz baze
 
 }); // kako dolazim do ovog endpointa
 
-app.MapGet("courses/id", async ([FromServices] StudentEnrollmentDBContext context, int id) => // zelimo da dohvatimo podatak po idju
+app.MapGet("courses/id", async ([FromServices] StudentEnrollmentDbContext context, int id) => // zelimo da dohvatimo podatak po idju
 {
     return await context.Courses.FindAsync(id) is Course course ? Results.Ok(course) : Results.NotFound();
 
 });
 // metoda za dodavanje novog podatka u bazu
-app.MapPost("courses/", async (StudentEnrollmentDBContext context, Course course) => 
+app.MapPost("courses/", async (StudentEnrollmentDbContext context, Course course) => 
 {
     await context.AddAsync(course);
     await context.SaveChangesAsync();
@@ -56,7 +57,7 @@ app.MapPost("courses/", async (StudentEnrollmentDBContext context, Course course
 
 });
 // metoda za menjanje vec postojecih podataka, po idju
-app.MapPut("courses/{id}", async ( StudentEnrollmentDBContext context, Course course, int id) =>
+app.MapPut("courses/{id}", async (StudentEnrollmentDbContext context, Course course, int id) =>
 {
     var recordExists = await context.Courses.AnyAsync(q => q.Id == course.Id);
     if (!recordExists) return Results.NotFound();
@@ -68,7 +69,7 @@ app.MapPut("courses/{id}", async ( StudentEnrollmentDBContext context, Course co
 
 });
 // brisanje podatka po idju
-app.MapDelete("courses/{id}", async (StudentEnrollmentDBContext context, Course course, int id) =>
+app.MapDelete("courses/{id}", async (StudentEnrollmentDbContext context, Course course, int id) =>
 {
     var record = await context.Courses.FindAsync(id);
     if (record == null) return Results.NotFound();
@@ -79,6 +80,12 @@ app.MapDelete("courses/{id}", async (StudentEnrollmentDBContext context, Course 
 
 
 });
+
+app.MapStudentEndpoints();
+
+app.MapEnrollmentEndpoints();
+
+app.MapCourseEndpoints();
 
 app.Run();
 
