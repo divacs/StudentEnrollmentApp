@@ -1,6 +1,16 @@
-﻿namespace StudentEnrollment.API.DTOs.Enrollment
+﻿using StudentEnrollment.Api.DTOs.Course;
+using StudentEnrollment.Api.DTOs.Student;
+using StudentEnrollment.API.DTOs.Course;
+using StudentEnrollment.API.DTOs.Students;
+
+namespace StudentEnrollment.Api.DTOs.Enrollment
 {
     public class EnrollmentDto
     {
+        public int CourseId { get; set; }
+        public int StudentId { get; set; }
+
+        public virtual CourseDto Course { get; set; }
+        public virtual StudentDto Student { get; set; }
     }
 }
