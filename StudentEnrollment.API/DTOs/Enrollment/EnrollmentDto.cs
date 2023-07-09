@@ -1,7 +1,7 @@
 ﻿using StudentEnrollment.Api.DTOs.Course;
 using StudentEnrollment.Api.DTOs.Student;
 using StudentEnrollment.API.DTOs.Course;
-using StudentEnrollment.API.DTOs.Students;
+
 
 namespace StudentEnrollment.Api.DTOs.Enrollment
 {

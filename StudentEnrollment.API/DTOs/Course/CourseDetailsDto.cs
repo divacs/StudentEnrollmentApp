@@ -1,4 +1,5 @@
-﻿using StudentEnrollment.API.DTOs.Students;
+﻿using StudentEnrollment.Api.DTOs.Student;
+
 
 
 
